@@ -1,32 +1,47 @@
-async function fetchPopulation() {
-  try {
-    const response = await fetch("/getEmployment");
-    const dataset = await response.json();
+const table = document.getElementById("tbody")
+const url1 = "https://pxdata.stat.fi/PxWeb/api/v1/fi/StatFin/vaerak/statfin_vaerak_pxt_11ra.px"
 
-    const municipalities = dataset.dimension.Alue.category.label;
-    const values = dataset.value;
+console.log("virhe");
 
-    const tbody = document.getElementById("tbody");
-    tbody.innerHTML = "";
+async function fetchPopulationData() {
+        const queryResponse = await fetch("population_query.json");
+        const populationQuery = await queryResponse.json();
 
-    let i = 0;
-    for (const key in municipalities) {
-      const row = document.createElement("tr");
-
-      const cellMunicipality = document.createElement("td");
-      cellMunicipality.textContent = municipalities[key];
-
-      const cellPopulation = document.createElement("td");
-      cellPopulation.textContent = values[i];
-
-      row.appendChild(cellMunicipality);
-      row.appendChild(cellPopulation);
-
-      tbody.appendChild(row);
-      i++;
-    }
-  } catch (error) {
-    console.error("Error fetching population data:", error);
-  }
+        const response = await fetch(url1, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(populationQuery)
+        });
+        
+        const data = await response.json();
+        displayPopulationData(data);
 }
-window.addEventListener("DOMContentLoaded", fetchPopulation);
+
+console.log("virhe");
+
+function displayPopulationData(data) {
+    const municipalities = data.dimension.Alue.category.label;
+    const populations = data.value;
+
+    table.innerHTML = "";
+
+    Object.keys(municipalities).forEach((key, index) => {
+        const tr = document.createElement("tr");
+        const td1 = document.createElement("td");
+        const td2 = document.createElement("td");
+
+        td1.innerText = municipalities[key];
+        td2.innerText = populations[index] ? populations[index].toLocaleString() : "N/A";
+
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+        table.appendChild(tr);
+    });
+}
+
+console.log("virhe");
+
+
+window.addEventListener("load", fetchPopulationData);
