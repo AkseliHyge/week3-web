@@ -1,14 +1,6 @@
 async function fetchPopulation() {
   try {
-    const queryResponse = await fetch("population_query.json");
-    const query = await queryResponse.json();
-
-    const response = await fetch("/getEmployment", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(query),
-    });
-
+    const response = await fetch("/getEmployment");
     const dataset = await response.json();
 
     const municipalities = dataset.dimension.Alue.category.label;
@@ -19,19 +11,19 @@ async function fetchPopulation() {
 
     let i = 0;
     for (const key in municipalities) {
-        const row = document.createElement("tr");
+      const row = document.createElement("tr");
 
-        const cellMunicipality = document.createElement("td");
-        cellMunicipality.textContent = municipalities[key];
+      const cellMunicipality = document.createElement("td");
+      cellMunicipality.textContent = municipalities[key];
 
-        const cellPopulation = document.createElement("td");
-        cellPopulation.textContent = values[i];
+      const cellPopulation = document.createElement("td");
+      cellPopulation.textContent = values[i];
 
-        row.appendChild(cellMunicipality);
-        row.appendChild(cellPopulation);
+      row.appendChild(cellMunicipality);
+      row.appendChild(cellPopulation);
 
-        tbody.appendChild(row);
-        i++;
+      tbody.appendChild(row);
+      i++;
     }
   } catch (error) {
     console.error("Error fetching population data:", error);
