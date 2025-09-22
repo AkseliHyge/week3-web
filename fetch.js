@@ -3,14 +3,11 @@ async function fetchPopulation() {
     const queryResponse = await fetch("population_query.json");
     const query = await queryResponse.json();
 
-    const response = await fetch(
-      "https://pxdata.stat.fi/PxWeb/api/v1/fi/StatFin/vaerak/statfin_vaerak_pxt_11ra.px",
-      {
+    const response = await fetch("/getEmployment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(query),
-      }
-    );
+    });
 
     const dataset = await response.json();
 
@@ -22,19 +19,19 @@ async function fetchPopulation() {
 
     let i = 0;
     for (const key in municipalities) {
-      const row = document.createElement("tr");
+        const row = document.createElement("tr");
 
-      const cellMunicipality = document.createElement("td");
-      cellMunicipality.textContent = municipalities[key];
+        const cellMunicipality = document.createElement("td");
+        cellMunicipality.textContent = municipalities[key];
 
-      const cellPopulation = document.createElement("td");
-      cellPopulation.textContent = values[i];
+        const cellPopulation = document.createElement("td");
+        cellPopulation.textContent = values[i];
 
-      row.appendChild(cellMunicipality);
-      row.appendChild(cellPopulation);
+        row.appendChild(cellMunicipality);
+        row.appendChild(cellPopulation);
 
-      tbody.appendChild(row);
-      i++;
+        tbody.appendChild(row);
+        i++;
     }
   } catch (error) {
     console.error("Error fetching population data:", error);
