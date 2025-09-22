@@ -1,18 +1,8 @@
 async function fetchPopulation() {
   try {
-    
-    const queryResponse = await fetch("population_query.json");
-    const query = await queryResponse.json();
-    const response = await fetch(
-      "https://pxdata.stat.fi/PxWeb/api/v1/fi/StatFin/vaerak/statfin_vaerak_pxt_11ra.px",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(query),
-      }
-    );
-
+    const response = await fetch("/getEmployment");
     const dataset = await response.json();
+
     const municipalities = dataset.dimension.Alue.category.label;
     const values = dataset.value;
 
@@ -39,5 +29,4 @@ async function fetchPopulation() {
     console.error("Error fetching population data:", error);
   }
 }
-
 window.addEventListener("DOMContentLoaded", fetchPopulation);
